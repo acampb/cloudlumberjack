@@ -13,9 +13,7 @@ title: CloudLumberjack                          # the main title
 tagline: A text-focused Jekyll theme.  # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  A minimal, portfolio, sidebar,
-  bootstrap Jekyll theme with responsive web design
-  and focuses on text presentation.
+  A blog about cloud, DevOps, Azure, PowerShell, automation, and whatever else
 
 # Replace with the website url, e.g. 'https://username.github.io'
 url: 'https://cloudlumberjack.com'
