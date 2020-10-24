@@ -8,5 +8,5 @@ I live in central PA, am a husband to an awesome wife, father to two young child
 
 *"Teaching, for me, is a repayment of something that was done for me. It’s a debt that I owe, not to the person who taught me, but to the people I have yet to teach." -- Don Jones, Be the Master*
 
-![andrew_finn](/images/andrew_finn.jpg)
+![andrew_finn](/assets/img/about/andrew_finn.jpg)
 <!--- comment --->

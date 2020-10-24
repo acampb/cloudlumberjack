@@ -22,7 +22,7 @@ url: 'https://cloudlumberjack.com'
 
 author: Andrew Campbell                  # change to your full name
 
-avatar: /assets/img/sample/avatar.jpg   # support internet resources
+avatar: /assets/img/avatar.jpg   # support internet resources
 
 github:
   username: acampb             # change to your github username
