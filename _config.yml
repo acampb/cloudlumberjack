@@ -10,7 +10,8 @@
 
 title: CloudLumberjack                          # the main title
 
-tagline: A text-focused Jekyll theme.  # it will display as the sub-title
+tagline: A blog about cloud, DevOps, Azure, PowerShell, automation, and whatever else
+  # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A blog about cloud, DevOps, Azure, PowerShell, automation, and whatever else
