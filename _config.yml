@@ -196,6 +196,4 @@ sitemap_exclude:  # Sitemap will exclude the following items.
     - robots.txt
     - redirects.json
 
-# trying to get gh emojis to render
-plugins:
-  - jemoji
+
