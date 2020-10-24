@@ -9,7 +9,7 @@ pin: false
 
 # Verified commits in Github
 
-Want to see that sweet :heavy_check_mark:**Verified** status on your GitHub commit history? This guide walks through how to setup and configure everything needed on a Windows system!
+Want to see that sweet **Verified** status on your GitHub commit history? This guide walks through how to setup and configure everything needed on a Windows system!
 
 ## Install GnuPG (GPG)
 
@@ -98,6 +98,6 @@ Git can also be configured to automatically sign all commits. With this option c
 git config --global commit.gpgsign true
 ```
 
-Test out making a new commit and push to a GitHub repo, goto `Code` and `commits` and you should see the wonderful, green :heavy_check_mark:**Verified** badge!
+Test out making a new commit and push to a GitHub repo, goto `Code` and `commits` and you should see the wonderful, green **Verified** badge!
 
 ![gh-verified](/assets/img/gh-verified/gh-verified.png)
