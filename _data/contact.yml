@@ -13,6 +13,7 @@
 -
   type: linkedin
   icon: 'fab-linkedin'
+  url: 'https://linkedin.com/in/acampb'
 -
   type: email
   icon: 'fas fa-envelope'
