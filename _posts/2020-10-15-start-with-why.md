@@ -17,7 +17,7 @@ Reframing this concept as a debt that I owe hit me like a ton of bricks, and is 
 
 One day while listening to a podcast I hear the phrase "if it's not on my calendar it doesn't exist". I guess it was just what I needed to hear at the time. So I blocked out an hour early in the morning to write every day and here we are.
 
-So what is my "why?": It's simply to share knowledge.
+So what is my "why?": **It's simply to share knowledge.**
 
 I plan on doing this in two ways
 
