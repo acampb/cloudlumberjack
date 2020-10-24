@@ -7,8 +7,6 @@ tags: [GitHub, VSCode]
 pin: false
 ---
 
-# Verified commits in Github
-
 Want to see that sweet **Verified** status on your GitHub commit history? This guide walks through how to setup and configure everything needed on a Windows system!
 
 ## Install GnuPG (GPG)
