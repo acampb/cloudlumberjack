@@ -1,5 +1,5 @@
 ---
-title: Verified commits in GitHub
+title: Setup GitHub verified commits for VSCode
 author: Andrew Campbell
 date: 2020-10-25
 categories: []
