@@ -33,13 +33,13 @@ gpg --full-generate-key
 
 When prompted for GPG options provide the following:
 
-| Prompt | Response |
-| --- | --- |
-| Please select what kind of key you want: | `(1) RSA and RSA (default)` |
-| What keysize do you want: | `4096` |
-| Please specify how long the key should be valid: | `1y` |
+| Prompt | Response | Note |
+| --- | --- | --- |
+| Please select what kind of key you want: | `(1) RSA and RSA (default)` | [GitHub supported GPG key algorithms](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key#supported-gpg-key-algorithms) |
+| What keysize do you want: | `4096` | GitHub minimum is `4096` |
+| Please specify how long the key should be valid: | `1y` | No requirements from GitHub |
 | Real name: | _your name_ |
-| Email address: | _your email address_ |
+| Email address: | _your email address_ | Must match your verified email address with GitHub |
 | Comment: | `GitHub Verification` |
 
 You will be prompted for a passphrase to secure your key. Generate a nice secure password with something like [LastPass](https://www.lastpass.com) to use.
@@ -99,3 +99,41 @@ git config --global commit.gpgsign true
 Test out making a new commit and push to a GitHub repo, goto `Code` and `commits` and you should see the wonderful, green **Verified** badge!
 
 ![gh-verified](/assets/img/gh-verified/gh-verified.png)
+
+## Reduce GPG passphrase prompts
+
+The passphrase you provided when generating your gpg is used to lock and unlock access to your private key when git attempts to sign a commit. The first time you instruct git to sign a commit you should be greeted by a passphrase prompt similar to this screenshot:
+
+![gpg-passphrase](/assets/img/gh-verified/gpg-passphrase.png)
+
+When you installed GnuPG, it also installed and runs a service named `gpg-agent.exe` that is responsible for caching this passphrase so you're not prompted for it on every single commit. The default TTL for a cached passphrase however is 10 minutes. This is quite short for me, I'm not making commits every 10 minutes so it just ended up feeling like I was prompted for this passphrase every time. `gpg-agent.exe` contains some configuration options so we can adjust this behavior.
+
+List all of `gpg-agent.exe` current configuration options using the following:
+
+```powershell
+gpgconf --list-options gpg-agent
+```
+
+The options we need to configure are `default-cache-ttl` and `max-cache-ttl`. Both of these are configured with the number of seconds to cache the passphrase. The screenshot below shows the default values for both configuration options; `default-cache-ttl` set to `600`, and `max-cache-ttl` set to `7200`.
+
+![gpg-cachettl-1](/assets/img/gh-verified/gpg-cachettl-1.png)
+
+`gpg-agent.exe` reads its configuration from a file named `gpg-agent.conf`. This file needs to be in `%APPDATA%\gnupg`. By default this file does not exist, you will need to create it. You can use the PowerShell oneliner below to create the file and configure both options to `86400` (24 hours).
+
+```powershell
+Set-Content -Path $ENV:APPDATA\gnupg\gpg-agent.conf -Value "default-cache-ttl 86400$([System.Environment]::NewLine)max-cache-ttl 86400"
+```
+
+Run the following to restart `gpg-agent.exe`, and then verify the configuration options again:
+
+```powershell
+gpgconf --kill gpg-agent
+
+gpgconf --list-options gpg-agent
+```
+
+You should see `86400` as the configured value for both `default-cache-ttl` and `max-cache-ttl`
+
+![gpg-cachettl-2](/assets/img/gh-verified/gpg-cachettl-2.png)
+
+> Note: There is a good bit of guidance that states the `gpg-agent.conf` file needs to be in `%USERPROFILE%\.gnupg`, however this would never work for me. If you have trouble getting `gpg-agent.exe` to pick up the configuration changes try changing the file path and restarting the agent again.
