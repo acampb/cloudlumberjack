@@ -72,4 +72,11 @@
 
   {% include js-selector.html %}
 
+
+  <!-- Social Media Preview -->
+  {% if page.header-img %}
+  <meta property="og:image" content="{{ site.url }}/{{ page.image }}" />
+  {% endif %}
+
+  <meta property="og:description" content="{{ page.subtitle }}" />
 </head>
