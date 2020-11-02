@@ -13,13 +13,13 @@ description: Get static code analysis feedback on your PowerShell code hosted in
 
 If you are using PowerShell you should be storing you code in a code repository. [GitHub](https://github.com) and [Azure DevOps](https://dev.azure.com) are great choices, but really any git repo will do. This isn't an article about why you should be using version control, I feel that's been covered at great length in the community already.
 
-This article is going to walk through leveraging Azure DevOps to perform static code analysis using [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) as part of a Pull Request workflow.
+This article is going to walk through leveraging Azure DevOps to perform static code analysis using [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) as part of a Pull Request workflow. Our pull request will initiate PSScriptAnalyzer, gather the results, and post each issue as a comment on the offending line of code in the pull request.
 
 The file and folder structure can be modified to suit the needs of any other repo, but for the purposes of this article we'll be using the following:
 
-* `/azure-pipelines.yml`: The Azure DevOps pipeline yaml code; this installs `PSScriptAnalyzer` on the hosted agent, then runs our custom script to analyze a directory and post comments back to the Pull Request which initiated the pipeline.
-* `/tests/Start-PSScriptAnalyzer.ps1`: The custom PowerShell script which runs `PSScriptAnalyzer`, performs a for-each loop through the results, and then posts a comment on the specific file and line where the issue was detected.
-* `/scripts/example-script.ps1`: A sample script with a few errors that will cause `PSScriptAnalyzer` to produce warnings.
+* `/azure-pipelines.yml`: The Azure DevOps pipeline yaml code; this installs PSScriptAnalyzer on the hosted agent, then runs our custom script to analyze a directory and post comments back to the Pull Request which initiated the pipeline.
+* `/tests/Start-PSScriptAnalyzer.ps1`: The custom PowerShell script which runs PSScriptAnalyzer, performs a for-each loop through the results, and then posts a comment on the specific file and line where the issue was detected.
+* `/scripts/example-script.ps1`: A sample script with a few errors that will cause PSScriptAnalyzer to produce warnings.
 
 These files can all be downloaded from my GitHub repo here: [https://github.com/acampb/azuredevops-psscriptanalyzer-prcomments](https://github.com/acampb/azuredevops-psscriptanalyzer-prcomments)
 
@@ -27,7 +27,7 @@ These files can all be downloaded from my GitHub repo here: [https://github.com/
 
 ## Create the Azure DevOps Pipeline
 
-Start by adding the `Start-PSScriptAnalyzer.ps1` script to a new directory in your repo named `tests`. Grab the file from my GitHub repo above, or just copy the code block below:
+Start by adding the `Start-PSScriptAnalyzer.ps1` script to a new directory in your repo named `tests`. Grab the file from my GitHub repo above, or copy the code block below:
 
 ```powershell
 [CmdletBinding()]
@@ -157,7 +157,7 @@ if ( $ScriptAnalyzerResult ) {
 
 I'm committing my changes directly to the `master` branch in the screenshot above. This is generally a bad practice; and later we'll setup a branch policy to prevent this from happening, forcing updates to `master` to occur through the pull request process.
 
-For demonstrating the pipeline and PSScriptAnalyzer I've created an example script with several errors intentionally included so we can see generate some warnings. If you want to use this file in your repo you can grab it here: [https://github.com/acampb/azuredevops-psscriptanalyzer-prcomments/blob/main/scripts/example-script.ps1](https://github.com/acampb/azuredevops-psscriptanalyzer-prcomments/blob/main/scripts/example-script.ps1)
+For demonstrating the pipeline and PSScriptAnalyzer I've created an example script with several errors intentionally included so we can see PSScriptAnalyzer generate some warnings. If you want to use this file in your repo you can grab it here: [https://github.com/acampb/azuredevops-psscriptanalyzer-prcomments/blob/main/scripts/example-script.ps1](https://github.com/acampb/azuredevops-psscriptanalyzer-prcomments/blob/main/scripts/example-script.ps1)
 
 Now let's create our Azure DevOps Pipeline yaml file (`azure-pipelines.yml`) in the root of our repo. Use the code block below, or grab the file directly from the GitHub repo.
 
@@ -187,8 +187,7 @@ jobs:
         targetType: filePath
         pwsh: true
         filePath: $(Build.Repository.LocalPath)/tests/Start-PSScriptAnalyzer.ps1
-        arguments: '-ScriptDirectory ../scripts'
-        workingDirectory: $(Build.Repository.LocalPath)/tests
+        arguments: '-ScriptDirectory $(Build.Repository.LocalPath)/scripts'
 ```
 
 > Note: You may need to adjust the `filePath` parameter to where you stored the `Start-PSScriptAnalyzer.ps1` script, and the `arguments` to the directory where your PowerShell scripts are located.
