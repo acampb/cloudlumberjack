@@ -280,3 +280,24 @@ Updating the code failing the PSScriptAnalyzer tests and pushing new commits to 
 
 ## Troubleshooting
 
+### PullRequestContribute error
+
+```json
+{"$id":"1","innerException":null,"message":"TF401027: You need
+     | the Git 'PullRequestContribute' permission to perform this
+     | action. Details: identity
+     | 'Build\\0ef135cb-8cdd-4557-a536-e6f20b82b4b9', scope
+     | 'repository'.","typeName":"Microsoft.TeamFoundation.Git.Server.GitNeedsPermissionException, Microsoft.TeamFoundation.Git.Server","typeKey":"GitNeedsPermissionException"
+```
+
+If you are encountering this error in your pipeline it means the project Build Service user account does not have access to contribute (ie, post a comment) to a pull request. Review the steps to [Configure Build Service Permissions](#Configure-Build-Service-Permissions)
+
+### Add `-Verbose` for additional output
+
+Both PowerShell tasks in the pipeline support adding the `-Verbose` switch for additional output. This can be helpful in troubleshooting if you are encountering another issue.
+
+![add-verbose](/assets/img/ado-analyzer/add-verbose.png)
+
+The task output in the pipeline execution will include all verbose output from the script.
+
+![verbose-output](/assets/img/ado-analyzer/verbose-output.png)
