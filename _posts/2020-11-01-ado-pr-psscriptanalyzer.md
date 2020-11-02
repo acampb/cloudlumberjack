@@ -290,7 +290,7 @@ Updating the code failing the PSScriptAnalyzer tests and pushing new commits to 
      | 'repository'.","typeName":"Microsoft.TeamFoundation.Git.Server.GitNeedsPermissionException, Microsoft.TeamFoundation.Git.Server","typeKey":"GitNeedsPermissionException"
 ```
 
-If you are encountering this error in your pipeline it means the project Build Service user account does not have access to contribute (ie, post a comment) to a pull request. Review the steps to [Configure Build Service Permissions](##Configure-Build-Service-Permissions)
+If you are encountering this error in your pipeline it means the project Build Service user account does not have access to contribute (ie, post a comment) to a pull request. Review the steps to [Configure Build Service Permissions](#configure-build-service-permissions)
 
 ### Add `-Verbose` for additional output
 
