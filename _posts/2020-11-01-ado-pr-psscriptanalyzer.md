@@ -1,5 +1,5 @@
 ---
-title: Azure DevOps PowerShell static code analysis with Pull Request comments
+title: Azure DevOps PowerShell code analysis with Pull Request comments
 author: Andrew Campbell
 date: 2020-11-01
 categories: []
