@@ -3,7 +3,7 @@ title: Azure DevOps PowerShell static code analysis with Pull Request comments
 author: Andrew Campbell
 date: 2020-11-02
 categories: []
-tags: [AzureDevOps, PowerShell, PullRequest, CI/CD Pipeline]
+tags: [AzureDevOps, PowerShell, PullRequest, CICD Pipeline]
 pin: false
 image: /assets/img/ado-analyzer/ado-analyzer-social.png
 subtitle: Get static code analysis feedback on your PowerShell code hosted in Azure DevOps, using pipelines to create inline file comments within your pull requests.
