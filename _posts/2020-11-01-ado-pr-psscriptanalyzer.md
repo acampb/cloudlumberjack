@@ -11,7 +11,7 @@ description: Get static code analysis feedback on your PowerShell code hosted in
 
 ## Overview
 
-If you are using PowerShell you should be storing you code in a code repository. [GitHub](https://github.com) and [Azure DevOps](https://dev.azure.com) are great choices, but really any git repo will do. This isn't an article about why you should be using version control, I feel that's been covered at great length in the community already.
+If you are using PowerShell you should be storing your code in a code repository. [GitHub](https://github.com) and [Azure DevOps](https://dev.azure.com) are great choices, but really any git repo will do. This isn't an article about why you should be using version control, I feel that's been covered at great length in the community already.
 
 This article is going to walk through leveraging Azure DevOps to perform static code analysis using [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) as part of a Pull Request workflow. Our pull request will initiate PSScriptAnalyzer, gather the results, and post each issue as a comment on the offending line of code in the pull request.
 
