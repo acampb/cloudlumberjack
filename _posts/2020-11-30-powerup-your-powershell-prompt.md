@@ -5,7 +5,7 @@ date: 2020-12-19
 categories: []
 tags: [PowerShell, Windows Terminal, Azure, Git]
 pin: false
-image: /assets/img/shell1.png
+image: /assets/img/shell/shell1.png
 description: Improve your PowerShell experience with integrated command history and prediction, git status, file icons, fonts, and more.
 ---
 
@@ -18,8 +18,6 @@ One of the great things about PowerShell is that is so extensible and customizab
 > "PowerShell."
 
 >"How do you make it look like that? Mine is just blue."
-
-![shell](/assets/img/shell/shell1.png)
 
 So let's go through the different items I'm using to build this PowerShell experience.
 
