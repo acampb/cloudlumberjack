@@ -114,7 +114,7 @@ Open Windows Terminal settings, we will have JSON code blocks for each of our Te
     "name": "PowerShell",
     "source": "Windows.Terminal.PowershellCore",
     "fontFace": "Mononoki NF"
-},
+}
 ```
 
 | Note: Because this file is JSON, the line preceding our new fontFace line will need to have a comma added to the end of the line.
