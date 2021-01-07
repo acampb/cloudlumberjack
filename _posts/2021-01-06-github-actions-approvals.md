@@ -119,6 +119,8 @@ In the code snippet below notice that the `Deploy to Azure WebApp` step is acces
 
 Below is the full GitHub Actions workflow yaml file to perform our application deployment, utilizing environments.
 
+All of the code used for this article is available at my GitHub repo: [https://github.com/acampb/github-environments](https://github.com/acampb/github-environments)
+
 ```yaml
 name: 'Deploy ASP.NET Core app to Azure Web App'
 
