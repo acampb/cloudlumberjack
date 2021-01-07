@@ -6,7 +6,7 @@ categories: []
 tags: [GitHub, GitHub Actions, DevOps, CICD Pipeline]
 pin: false
 image: /assets/img/gh-approvals/notification1.png
-description:
+description: Implement deployment gating with manual approvals in GitHub Actions, now available with the Environments feature.
 ---
 
 ## Overview
