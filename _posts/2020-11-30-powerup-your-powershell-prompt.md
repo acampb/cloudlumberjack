@@ -33,7 +33,7 @@ So let's go through the different items I'm using to build this PowerShell exper
 
 ## Install a better shell
 
-I'm a big fan of utilizing Chocolatey to install and update Windows applications. Head over to [https://chocolatey.org/install](https://chocolatey.org/install) and follow the installation instructions to get Chocolatey on your system.
+I'm a big fan of utilizing Chocolatey to install and update Windows applications. Head over to [https://chocolatey.org/install](https://chocolatey.org/install){:target="_blank"} and follow the installation instructions to get Chocolatey on your system.
 
 * **PowerShell 7.1** is my daily driver; it's been rock solid for me and has significant performance increases over previous versions (especially if you're coming from Windows PowerShell 5.1). [https://devblogs.microsoft.com/powershell/announcing-powershell-7-1/](https://devblogs.microsoft.com/powershell/announcing-powershell-7-1/)
 
