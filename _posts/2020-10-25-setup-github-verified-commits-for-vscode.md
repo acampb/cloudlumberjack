@@ -13,9 +13,9 @@ Want to see that sweet **Verified** status on your GitHub commit history? This g
 
 ## Install GnuPG (GPG)
 
-I'm a big fan of leveraging [Chocolatey](https://chocolatey.org) for package management on Windows. It makes things really easy to find and install software, and keep things up to date.
+I'm a big fan of leveraging [Chocolatey](https://chocolatey.org){:target="_blank"} for package management on Windows. It makes things really easy to find and install software, and keep things up to date.
 
-If you dont have Chocolatey already installed, head over to [https://chocolatey.org/install](https://chocolatey.org/install) and follow the instructions.
+If you dont have Chocolatey already installed, head over to [https://chocolatey.org/install](https://chocolatey.org/install){:target="_blank"} and follow the instructions.
 
 Install GnuPG with Chocolatey by opening an elevated PowerShell prompt and running the following:
 
@@ -23,7 +23,7 @@ Install GnuPG with Chocolatey by opening an elevated PowerShell prompt and runni
 choco install gnupg
 ```
 
-If you prefer to install GnuPG manually you can download it here: [https://www.gnupg.org/download/index.html](https://www.gnupg.org/download/index.html)
+If you prefer to install GnuPG manually you can download it here: [https://www.gnupg.org/download/index.html](https://www.gnupg.org/download/index.html){:target="_blank"}
 
 ## Generate a GPG key pair
 
@@ -37,7 +37,7 @@ When prompted for GPG options provide the following:
 
 | Prompt | Response | Note |
 | --- | --- | --- |
-| Please select what kind of key you want: | `(1) RSA and RSA (default)` | [GitHub supported GPG key algorithms](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key#supported-gpg-key-algorithms) |
+| Please select what kind of key you want: | `(1) RSA and RSA (default)` | [GitHub supported GPG key algorithms](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key#supported-gpg-key-algorithms){:target="_blank"} |
 | What keysize do you want: | `4096` | GitHub minimum is `4096` |
 | Please specify how long the key should be valid: | `1y` | No requirements from GitHub |
 | Real name: | _your name_ |
