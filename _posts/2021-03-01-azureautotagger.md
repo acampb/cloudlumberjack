@@ -244,3 +244,4 @@ This ARM Template performs a subscription level deployment. It will initiate sev
 * Perform a linked template deployment to assign the Managed Identity to the `Reader` role. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json](https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json){:target="_blank"}
 
 * Perform a linked template deployment to assign the Managed Identity to the `Tag Contributor` role. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json](https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json){:target="_blank"}
+
