@@ -13,9 +13,9 @@ description: Quickly deploy a serverless solution to automate tagging of Azure r
 
 Azure AutoTagger is a lightweight, low-cost serverless solution that can easily be deployed to an Azure subscription. Once deployed Azure AutoTagger monitors for `ResourceWriteSucess` events within the subscription and triggers an Azure Function to automatically apply a `LastModifiedTimestamp` and `LastModifiedBy` tag.
 
-* **https://github.com/acampb/AzureAutoTagger**: Contains the ARM template code to deploy the infrastructure and role assignments to the subscription
+* [**https://github.com/acampb/AzureAutoTagger**](https://github.com/acampb/AzureAutoTagger){:target="_blank"}: Contains the ARM template code to deploy the infrastructure and role assignments to the subscription
 
-* **https://github.com/acampb/AzureAutoTaggerFunction**: Contains the Azure Function PowerShell code
+* [**https://github.com/acampb/AzureAutoTaggerFunction**](https://github.com/acampb/AzureAutoTaggerFunction){:target="_blank"}: Contains the Azure Function PowerShell code
 
 ![tagging](/assets/img/autotagger/tagging-spedup.gif)
 
@@ -58,10 +58,10 @@ Azure Event Grid allows you to build applications with event-based architectures
 There are five concepts in Azure Event Grid that let you get going:
 
 * **Events** - JSON data describing what happened.
-* [**Event Sources**](https://docs.microsoft.com/en-us/azure/event-grid/overview#event-sources) - Azure service the event took place (or custom). In this solution this is the Azure Subscription itself.
+* [**Event Sources**](https://docs.microsoft.com/en-us/azure/event-grid/overview#event-sources){:target="_blank"} - Azure service the event took place (or custom). In this solution this is the Azure Subscription itself.
 * **Topics** - The deployed Azure resource (endpoint) where publishers send events.
 * **Event subscriptions** - The endpoint or built-in mechanism to route events, sometimes to more than one handler. Subscriptions are also used by handlers to intelligently filter incoming events.
-* [**Event handlers**](https://docs.microsoft.com/en-us/azure/event-grid/overview#event-handlers) - The app or service reacting to the event. In this solution we are using an Azure Function App
+* [**Event handlers**](https://docs.microsoft.com/en-us/azure/event-grid/overview#event-handlers){:target="_blank"} - The app or service reacting to the event. In this solution we are using an Azure Function App
 
 The Azure AutoTagger solution starts by creating an Event Grid System Topic configured with the Azure subscription as the event source. An Event Subscription is then configured to consume the events emitted by the Azure subscription. The Event Subscription only routes events of the type `ResourceWriteSuccess`, so we are only sending events to this subscription when a resource is written (created or changed). The Event Subscription is connected to the Azure Function App as it's Event Handler.
 
@@ -221,7 +221,7 @@ This ARM Template performs a subscription level deployment. It will initiate sev
 
 * Create a new Resource Group with the name specified in the parameter `resourceGroupName`. Defaults to `rg-autotagger` if no other value is specified
 
-* Perform a linked template deployment to create the Event Grid and Function App resources. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/eventgridfunction.json](https://github.com/acampb/AzureAutoTagger/blob/main/eventgridfunction.json)
+* Perform a linked template deployment to create the Event Grid and Function App resources. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/eventgridfunction.json](https://github.com/acampb/AzureAutoTagger/blob/main/eventgridfunction.json){:target="_blank"}
 
     * Create the User Assigned Managed Identity
 
@@ -241,6 +241,6 @@ This ARM Template performs a subscription level deployment. It will initiate sev
 
     * Output the Managed Identity Principal Id
 
-* Perform a linked template deployment to assign the Managed Identity to the `Reader` role. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json](https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json)
+* Perform a linked template deployment to assign the Managed Identity to the `Reader` role. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json](https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json){:target="_blank"}
 
-* Perform a linked template deployment to assign the Managed Identity to the `Tag Contributor` role. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json](https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json)
+* Perform a linked template deployment to assign the Managed Identity to the `Tag Contributor` role. Uses [https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json](https://github.com/acampb/AzureAutoTagger/blob/main/rbac.json){:target="_blank"}
