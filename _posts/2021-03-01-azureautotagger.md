@@ -13,8 +13,6 @@ description: Quickly deploy a serverless solution to automate tagging of Azure r
 
 Azure AutoTagger is a lightweight, low-cost serverless solution that can easily be deployed to an Azure subscription. Once deployed Azure AutoTagger monitors for `ResourceWriteSucess` events within the subscription and triggers an Azure Function to automatically apply a `LastModifiedTimestamp` and `LastModifiedBy` tag.
 
-![azureautotagger](/assets/img/autotagger/autotagger.png)
-
 * **https://github.com/acampb/AzureAutoTagger**: Contains the ARM template code to deploy the infrastructure and role assignments to the subscription
 
 * **https://github.com/acampb/AzureAutoTaggerFunction**: Contains the Azure Function PowerShell code
@@ -53,7 +51,19 @@ az deployment create --location "West US" --template-file ".\azuredeploy.json" -
 
 ## Event Grid
 
-The solution starts by creating an Event Grid System Topic connected to the Azure subscription it is deployed in. An Event Grid Subscription is then configured to consume the events emitted by the Azure subscription. The Event Grid Subscription only consumes events of the type `ResourceWriteSuccess`, so we are only sending events to this subscription when a resource is written (created or changed).
+Azure Event Grid allows you to build applications with event-based architectures. Configure the Azure resource you would like to subscribe to, and then give the event handler or WebHook endpoint to send the event to. Event Grid has built-in support for events coming from Azure services, like storage blobs, resource groups, and subscriptions. Event Grid also has support for your own events, using custom topics.
+
+![event-grid](/assets/img/autotagger/event-grid.png)
+
+There are five concepts in Azure Event Grid that let you get going:
+
+* **Events** - JSON data describing what happened.
+* [**Event Sources**](https://docs.microsoft.com/en-us/azure/event-grid/overview#event-sources) - Azure service the event took place (or custom). In this solution this is the Azure Subscription itself.
+* **Topics** - The deployed Azure resource (endpoint) where publishers send events.
+* **Event subscriptions** - The endpoint or built-in mechanism to route events, sometimes to more than one handler. Subscriptions are also used by handlers to intelligently filter incoming events.
+* [**Event handlers**](https://docs.microsoft.com/en-us/azure/event-grid/overview#event-handlers) - The app or service reacting to the event. In this solution we are using an Azure Function App
+
+The Azure AutoTagger solution starts by creating an Event Grid System Topic configured with the Azure subscription as the event source. An Event Subscription is then configured to consume the events emitted by the Azure subscription. The Event Subscription only routes events of the type `ResourceWriteSuccess`, so we are only sending events to this subscription when a resource is written (created or changed). The Event Subscription is connected to the Azure Function App as it's Event Handler.
 
 The events emitted by the Azure Subscription are standard JSON payloads describing what resource was changed, and the authentication claim of the identity initiating performing the resource write operation. Below is a sample event JSON from the Azure documentation:
 
@@ -117,11 +127,80 @@ The events emitted by the Azure Subscription are standard JSON payloads describi
 
 The event JSON contains some interesting data that we will utilize later within our Azure function, notably the `ResourceUri` and some claim information about the user or service principal performing the operation. The Event Subscription is configured to trigger our Azure Function to execute on a new event and will pass this JSON data object to the Function as a parameter in our PowerShell script.
 
-You may be thinking "wait, wont the Azure Function writing tags create an endless loop of insanity?". Yes, yes it will, unless we configure some additional filtering. Within the Event Grid Subscription configure we also create an advanced filter to exclude the event if the `$data.claims.appid` matches the appid of the Azure Function itself.
+You may be thinking "wait, wont the Azure Function writing tags create an endless loop of insanity?". Yes, yes it will, unless we configure some additional filtering. Within the Event Grid Subscription configure we also create an advanced filter to exclude the event if the `$data.claims.appid` matches the appid of the Azure Function's identity.
 
 ## Azure Function
 
-The Azure Function executes PowerShell code which parses the JSON data provided from the Event Grid for which user or service principal modified the Azure resource, and what the Resource Uri is. The script then creates a hashtable and updates the tags on the resource. The code performs an `Update-AzTag -Merge` operation so any existing tags are preserved.
+Azure Functions is a serverless solution that allows you to write less code, maintain less infrastructure, and save on costs. Instead of worrying about deploying and maintaining servers, the cloud infrastructure provides all the up-to-date resources needed to keep your applications running.
+
+![functions](/assets/img/autotagger/functions.png)
+
+A PowerShell Azure Function is represented as a PowerShell script that executes when triggered. Each function script has a related `function.json` file that defines how the function behaves, such as how it's triggered and its input and output parameters.
+
+PowerShell Functions take in parameters that match the names of all the input bindings defined in the `function.json` file. A `TriggerMetadata` parameter is also passed that contains additional information on the trigger that started the function.
+
+The Azure AutoTagger solution deploys a Function App containing a single PowerShell script Function named `AutoTagger`. The `AutoTagger` Function executes a PowerShell script which parses the JSON data provided from the Event Grid for which user or service principal modified the Azure resource, and what  Resource Uri was modified. The script then creates a hashtable and updates the tags on the resource. The code performs an `Update-AzTag -Merge` operation so any existing tags are preserved.
+
+```powershell
+param($eventGridEvent, $TriggerMetadata)
+
+# Make sure to pass hashtables to Out-String so they're logged correctly
+#$eventGridEvent | Out-String | Write-Host
+
+# uncomment for claims detail for debugging
+#Write-Output $eventGridEvent.data.claims | Format-List
+
+$name = $eventGridEvent.data.claims.name
+Write-Output "NAME: $name"
+
+$appid = $eventGridEvent.data.claims.appid
+Write-Output "APPID: $appid"
+
+$email = $eventGridEvent.data.claims.'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+Write-Output "EMAIL: $email"
+
+$time = Get-Date -Format o
+Write-Output "TIMESTAMP: $time"
+
+$uri = $eventGridEvent.data.resourceUri
+Write-Output "URI: $uri"
+
+
+try {
+    $resource = Get-AzResource -ResourceId $uri -ErrorAction Stop
+
+    If (($resource) -and
+        ($resource.ResourceId -notlike '*Microsoft.Resources/deployments*')) {
+
+        Write-Output 'Attempting to tag resource'
+
+        If ($email) {
+            $lastModifiedBy = $email
+        } else {
+            $lastModifiedBy = $appid
+        }
+
+        $tags = @{
+            "LastModifiedBy"        = $lastModifiedBy
+            "LastModifiedTimeStamp" = $time
+        }
+        try {
+            Update-AzTag -ResourceId $uri -Tag $tags -Operation Merge
+        }
+        catch {
+            Write-Output "Encountered error writing tag, may be a resource that does not support tags."
+        }
+    }
+    else {
+        Write-Output 'Excluded resource type'
+    }
+}
+catch {
+    Write-Output "Not able query the resource Uri. This could be due to a permissions problem (identity needs reader); or not a resource we can query"
+}
+```
+
+## Additional Resources Deployed
 
 These additional resources are deployed in support of the Azure Function:
 
@@ -129,50 +208,6 @@ These additional resources are deployed in support of the Azure Function:
 * **App Service Plan**: The App Service Plan is the hosting plan for the Azure Function. The plan provides the compute and memory for the function, and controls additional functionality. The deployment template defaults to the `Consumption` plan for the lowest possible cost, but this could be upgraded later if required.
 * **Application Insights**: Application Insights is deployed and configured in order to provide troubleshooting and log streaming capabilities.
 * **User Assigned Managed Identity**: A User assigned managed identity is created and assigned to the Azure Function. When the Function's PowerShell code is executed it is authenticated to the Azure subscription using this identity. This managed identity is also assigned to the `Reader` and `Tag Contributor` RBAC roles.
-
-## Authentication
-
-Getting authentication working correctly with this solution actually proved to be a bit of a challenge I wasn't expecting. Initially I created a System Assigned Managed Identity with the Function app, and added it to the `Reader` and `Tag Contributor` roles. The PowerShell runtime for Azure Functions actually handles this scenario natively very well. When your function is started it executes the `profile.ps1` file, and the default file has this section of code to authenticate to Azure built in.
-
-```powershell
-# Authenticate with Azure PowerShell using MSI.
-# Remove this if you are not planning on using MSI or Azure PowerShell.
-if ($env:MSI_SECRET) {
-    Disable-AzContextAutosave -Scope Process | Out-Null
-    Connect-AzAccount -Identity
-}
-```
-
-As soon as you create a system assigned managed identity for the Function App it will automatically create an environmental variable named `MSI_SECRET`. When this variable is present the `profile.ps1` authenticates to Azure using that identity.
-
-I used this approach for several weeks while I was developing and testing and it worked fine to get the Function authenticated. However, I was noticing the Function App performing the `Update-AzTag` operation was itself a `ResourceWriteSuccess` which caused the Event Grid to emit another event and trigger another execution of the Function. Initially I just focused on events where a user email address was present to use as the `LastModifiedBy` tag, but I also wanted to support resource changes made by other sources (ARM template deployments, Terraform, Ansible, Azure Policy, etc).
-
-Those sources were identifiable by `Application Id` and `Object Id`. I figured it would be easy to filter the `ResourceWriteSuccess` events caused by the Function itself from the Event Grid Subscription. I knew I could reference the `ObjectId` of a System Assigned Managed Identity from the ARM template deployment, I just needed to filter my events based on that. The `ObjectId` was present in JSON event data at `data.claims.http://schemas.microsoft.com/identity/claims/objectidentifier`. Unfortunately the Event Grid Advanced Filters have a limitation where keys with a . (dot) character cannot be used for a filter. So back to the drawing board.
-
-The JSON event data contains another property `data.claims.appid` which doesn't have dots in the key name, so I started down the rabbit hole of trying to query the Application Id of the System Assigned Managed Identity. I could not find any way to query this natively with ARM template `reference` functions as the service principal itself is an Azure Active Directory object, and not an Azure subscription resource. I was able to get an ARM template Deployment Script to execute a script to query Azure Active Directory for the App Id, but the Deployment Script itself the needed an identity with permissions to query Azure AD.
-
-I eventually settled on just creating a User Assigned Managed Identity directly with the ARM template deployment. That managed identity does expose it's Application Id within ARM so I can then configure the Function App to use this identity, and automatically create the advanced filter within the Event Grid Subscription to exclude events with this App Id.
-
-Now my ARM template was looking good, but some additional testing showed that my Function App was now no longer authenticating to Azure. This led me back to the bit of code in `profile.ps1` that handles authenticating to Azure. I confirmed that the environment variable `MSI_SECRET` still existed, but it would not authenticate.
-
-```shell
-ERROR: ManagedIdentityCredential authentication failed: Service request failed.Status: 400 (Bad Request)
-```
-
-This error led me to some [issues for `azure-sdk-for-net` on GitHub](https://github.com/Azure/azure-sdk-for-net/issues/13564); suggesting that what was missing was another environmental variable named `AZURE_CLIENT_ID` set to the managed identities' client id. This is due to the fact that a resource (Azure Function in this case) can have multiple user-assigned managed identities, and we need to explicitly tell it which to authenticate with. After creating `AZURE_CLIENT_ID` as an App Setting in the Function App (which are exposed as environmental variables at runtime), I was still recieving the same error.
-
-The final piece in the puzzle was the `Connect-AzAccount` cmdlet in `profile.ps1` itself. When using this cmdlet with a user assigned managed identity you need to provide the `-AccountId` parameter with the identity client id as well. I updated `profile.ps1` with the following code and everything came together and authenticated. I'm still utilizing the `AZURE_CLIENT_ID` variable set on the Function App as a method to pass the client id to the function code when it executes.
-
-
-
-```powershell
-# Authenticate with Azure PowerShell using MSI.
-# Remove this if you are not planning on using MSI or Azure PowerShell.
-if ($env:MSI_SECRET) {
-    Disable-AzContextAutosave -Scope Process | Out-Null
-    Connect-AzAccount -Identity -AccountId $env:AZURE_CLIENT_ID
-}
-```
 
 ## ARM Template Deployment
 
