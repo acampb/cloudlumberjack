@@ -17,7 +17,7 @@ Azure AutoTagger is a lightweight, low-cost serverless solution that can easily 
 
 * **https://github.com/acampb/AzureAutoTaggerFunction**: Contains the Azure Function PowerShell code
 
-![tags](/assets/img/autotagger/tags.png)
+![tagging](/assets/img/autotagger/tagging-spedup.gif)
 
 ## Deployment
 
@@ -200,9 +200,15 @@ catch {
 }
 ```
 
-## Additional Resources Deployed
+## Azure Resources Deployed
 
-These additional resources are deployed in support of the Azure Function:
+The entire solution consists of the six resources (pictured below) deployed to the Resource Group, and two Azure Role Assignments.
+
+All of the resources are suffixed using the ARM template function `uniqueString` derived from the Azure Subscription id. This is to avoid naming conflicts on the resources which require global uniqueness.
+
+![autotagger-rg](/assets/img/autotagger/autotagger-rg.png)
+
+The Event Grid and Function App are the core components of the solution, the additional resources are deployed in support of the Azure Function:
 
 * **Storage Account**: A storage account is required for Azure Functions to operate.
 * **App Service Plan**: The App Service Plan is the hosting plan for the Azure Function. The plan provides the compute and memory for the function, and controls additional functionality. The deployment template defaults to the `Consumption` plan for the lowest possible cost, but this could be upgraded later if required.
@@ -211,7 +217,7 @@ These additional resources are deployed in support of the Azure Function:
 
 ## ARM Template Deployment
 
-This ARM Template is intended to perform a subscription level deployment. It will perform several linked deployments to deploy and configure all of the resources required in the solution.
+This ARM Template performs a subscription level deployment. It will initiate several linked deployments to deploy and configure all of the resources required in the solution.
 
 * Create a new Resource Group with the name specified in the parameter `resourceGroupName`. Defaults to `rg-autotagger` if no other value is specified
 
