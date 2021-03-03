@@ -5,7 +5,7 @@ date: 2021-01-06
 categories: []
 tags: [Azure, ARM Template, DevOps, PowerShell, Serverless, Functions]
 pin: false
-image: /assets/img/autotagger/azureautotagger.png
+image: /assets/img/autotagger/autotagger.png
 description: Quickly deploy a serverless solution to automate tagging of Azure resources with last modified data
 ---
 
@@ -13,7 +13,7 @@ description: Quickly deploy a serverless solution to automate tagging of Azure r
 
 Azure AutoTagger is a lightweight, low-cost serverless solution that can easily be deployed to an Azure subscription. Once deployed Azure AutoTagger monitors for `ResourceWriteSucess` events within the subscription and triggers an Azure Function to automatically apply a `LastModifiedTimestamp` and `LastModifiedBy` tag.
 
-![azureautotagger](/assets/img/autotagger/azureautotagger.png)
+![azureautotagger](/assets/img/autotagger/autotagger.png)
 
 * **https://github.com/acampb/AzureAutoTagger**: Contains the ARM template code to deploy the infrastructure and role assignments to the subscription
 
