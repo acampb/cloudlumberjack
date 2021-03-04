@@ -1,12 +1,12 @@
 ---
-title: Azure AutoTagger
+title: Serverless tagging with Event Grid and Azure Functions
 author: Andrew Campbell
 date: 2021-01-06
 categories: []
 tags: [Azure, ARM Template, DevOps, PowerShell, Serverless, Functions]
 pin: false
 image: /assets/img/autotagger/autotagger-logo.png
-description: Quickly deploy a serverless solution to automate tagging of Azure resources with last modified data
+description: Quickly deploy a serverless solution using Event Grid and Functions to automate tagging of Azure resources with last modified data.
 ---
 
 # Overview
