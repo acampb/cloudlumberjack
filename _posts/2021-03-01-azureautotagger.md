@@ -5,7 +5,7 @@ date: 2021-01-06
 categories: []
 tags: [Azure, ARM Template, DevOps, PowerShell, Serverless, Functions]
 pin: false
-image: /assets/img/autotagger/autotagger.png
+image: /assets/img/autotagger/autotagger-logo.png
 description: Quickly deploy a serverless solution to automate tagging of Azure resources with last modified data
 ---
 
